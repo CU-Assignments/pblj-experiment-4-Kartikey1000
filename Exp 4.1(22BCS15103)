@@ -1,0 +1,49 @@
+Aim: Write a Java program to implement an ArrayList that stores employee details (ID, Name, and Salary). Allow users to add, update, remove, and search employees.
+
+Code:
+import java.util.*;
+
+class Card {
+    String symbol;
+    String value;
+
+    Card(String symbol, String value) {
+        this.symbol = symbol;
+        this.value = value;
+    }
+
+    public String toString() {
+        return value + " of " + symbol;
+    }
+}
+
+public class CardCollection {
+    static ArrayList<Card> deck = new ArrayList<>();
+    static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        addCards();
+        System.out.print("Enter symbol to find cards (Hearts, Diamonds, Clubs, Spades): ");
+        String symbol = scanner.next();
+        findCards(symbol);
+    }
+
+    static void addCards() {
+        String[] symbols = {"Hearts", "Diamonds", "Clubs", "Spades"};
+        String[] values = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+        for (String symbol : symbols) {
+            for (String value : values) {
+                deck.add(new Card(symbol, value));
+            }
+        }
+    }
+
+    static void findCards(String symbol) {
+        System.out.println("Cards with symbol " + symbol + ":");
+        for (Card card : deck) {
+            if (card.symbol.equalsIgnoreCase(symbol)) {
+                System.out.println(card);
+            }
+        }
+    }
+}
