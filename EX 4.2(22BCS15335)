@@ -1,0 +1,58 @@
+Aim: Develop a ticket booking system with synchronized threads to ensure no double booking of seats. Use thread priorities to simulate VIP bookings being processed first.
+
+Code:
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+class TicketBookingSystem {
+    private static int availableSeats = 10;
+    private static final Lock lock = new ReentrantLock();
+
+    public void bookTicket(String passenger, int priority) {
+        Thread.currentThread().setPriority(priority);
+        lock.lock();
+        try {
+            if (availableSeats > 0) {
+                System.out.println(passenger + " booked a seat. Remaining seats: " + --availableSeats);
+            } else {
+                System.out.println(passenger + " could not book a seat. No seats available.");
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+class Passenger extends Thread {
+    TicketBookingSystem system;
+    String name;
+    int priority;
+
+    Passenger(TicketBookingSystem system, String name, int priority) {
+        this.system = system;
+        this.name = name;
+        this.priority = priority;
+    }
+
+    public void run() {
+        system.bookTicket(name, priority);
+    }
+}
+
+public class TicketBooking {
+    public static void main(String[] args) {
+        TicketBookingSystem system = new TicketBookingSystem();
+
+        Passenger p1 = new Passenger(system, "VIP1", Thread.MAX_PRIORITY);
+        Passenger p2 = new Passenger(system, "VIP2", Thread.MAX_PRIORITY);
+        Passenger p3 = new Passenger(system, "User1", Thread.NORM_PRIORITY);
+        Passenger p4 = new Passenger(system, "User2", Thread.NORM_PRIORITY);
+        Passenger p5 = new Passenger(system, "User3", Thread.MIN_PRIORITY);
+
+        p1.start();
+        p2.start();
+        p3.start();
+        p4.start();
+        p5.start();
+    }
+}
